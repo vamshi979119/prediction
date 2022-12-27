@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-prediction
+spec:
+  selector:
+    matchLabels:
+      app: cloud-prediction
+  template:
+    metadata:
+      labels:
+        app: cloud-prediction
+    spec:
+      containers:
+        - name: cloud-prediction
+          image: vamshi979119/prediction:v1
+          # To limit the resources: 
+          # resources:
+          #   limits:
+          #     cpu: "2"
+          #     memory: "1024Mi"
+          ports:
+            - containerPort: 5000
+          env:
+          - name: FLASK_APP
+            value: app.py
+          volumeMounts:
+          - mountPath: /usr/app/data
+            name: data
+      restartPolicy: Always
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: cloud-prediction
